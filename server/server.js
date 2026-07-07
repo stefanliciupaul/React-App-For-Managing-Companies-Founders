@@ -299,24 +299,22 @@ app.delete('/companies/:cid/founders/:fid', async (req, res) => {
 
 // filtering Companies - return all the Companies that came out after a certain date and belong to a certain category
 
-app.get('/companiesFlt/:name/:year', async (req, res) => {
+app.get('/companiesFlt', async (req, res) => {
 
-    const filteringDate = new Date(`${req.params.year}-12-31`);
-    const nameLike=req.params.name
-    
+    const { name, year } = req.query
+    const where = {}
+
+    if (name) {
+        where.name = { [Op.substring]: name }
+    }
+    if (year) {
+        where.foundingDate = { [Op.gt]: new Date(`${year}-12-31`) }
+    }
+
     try {
-        const companies = await Company.findAll(
-            {
-                where: {
-                    name: { [Op.substring] : nameLike},
-                    foundingDate: {
-                        [Op.gt]: filteringDate
-                    }
-                }
-            }
-        )
+        const companies = await Company.findAll({ where })
         res.status(200).json(companies)
-    } catch {
+    } catch (err) {
         console.warn(err);
         res.status(500).json({ message: 'some error occured' })
     }

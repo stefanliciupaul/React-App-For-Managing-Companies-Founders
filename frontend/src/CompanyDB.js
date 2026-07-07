@@ -84,7 +84,10 @@ class CompanyDB {
 
     async filterCompany(name, year) {
         try{
-            const response = await fetch(`${SERVER}/companiesFlt/${name}/${year}`)
+            const params = new URLSearchParams()
+            if (name) params.set('name', name)
+            if (year) params.set('year', year)
+            const response = await fetch(`${SERVER}/companiesFlt?${params.toString()}`)
             if(!response.ok){
                 throw response
             }

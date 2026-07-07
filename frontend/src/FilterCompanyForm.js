@@ -14,6 +14,8 @@ import { useState } from "react";
     }
 
     const clearFilter = (event) => {
+        setName('');
+        setYear('');
         setSorted(false);
         setFiltered(false);
     }
